@@ -64,7 +64,7 @@ class MainFragment : Fragment() {
             }
 
             viewState.user?.let {
-                Log.d(TAG, "subscribeObservers: $it")
+                println("DEBUG: Setting user data: ${it}")
             }
         })
 
@@ -84,13 +84,14 @@ class MainFragment : Fragment() {
         return super.onOptionsItemSelected(item)
     }
 
+    private fun triggerGetUserEvent() {
+        viewModel.setStateEvent(GetUserEvent("1"))
+    }
+
     private fun triggerGetBlogsEvent() {
         viewModel.setStateEvent(GetBlogPostsEvent())
     }
 
-    private fun triggerGetUserEvent() {
-        viewModel.setStateEvent(GetUserEvent("1"))
-    }
 
 
 }

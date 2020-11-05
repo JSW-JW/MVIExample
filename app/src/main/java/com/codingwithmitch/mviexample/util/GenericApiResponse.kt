@@ -1,4 +1,4 @@
-package com.codingwithmitch.util
+package com.codingwithmitch.mviexample.util
 
 import android.util.Log
 import retrofit2.Response
@@ -12,7 +12,6 @@ sealed class GenericApiResponse<T> {
 
     companion object {
         private val TAG: String = "AppDebug"
-
 
         fun <T> create(error: Throwable): ApiErrorResponse<T> {
             return ApiErrorResponse(error.message ?: "unknown error")

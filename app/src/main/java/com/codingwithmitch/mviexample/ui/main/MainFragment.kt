@@ -65,7 +65,7 @@ class MainFragment : Fragment() {
 
             // Handle loading
             dataState.loading.let {
-                
+
             }
 
         })

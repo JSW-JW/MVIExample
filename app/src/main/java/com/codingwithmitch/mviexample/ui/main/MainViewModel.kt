@@ -6,7 +6,7 @@ import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.codingwithmitch.mviexample.model.BlogPost
 import com.codingwithmitch.mviexample.model.User
-import com.codingwithmitch.mviexample.repository.main.Repository
+import com.codingwithmitch.mviexample.repository.Repository
 import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent
 import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent.*
 import com.codingwithmitch.mviexample.ui.main.state.MainViewState

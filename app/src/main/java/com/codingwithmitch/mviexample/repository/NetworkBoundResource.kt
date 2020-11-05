@@ -1,0 +1,70 @@
+package com.codingwithmitch.mviexample.repository
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import com.codingwithmitch.mviexample.ui.main.state.MainViewState
+import com.codingwithmitch.mviexample.util.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+/*  Very Simple Explanation..!!
+ LiveData -> set it -> look at it
+MediatorLiveData -> look at it -> make changes to it -> set it. */
+
+abstract class NetworkBoundResource<ResponseObject, ViewStateType> {
+
+    protected val result = MediatorLiveData<DataState<ViewStateType>>()
+
+    init {
+
+        GlobalScope.launch(IO) {
+
+            delay(Constants.TESTTING_NETWORK_DEALY)
+
+            withContext(Main) {
+
+                val apiResponse = createCall()
+
+                result.addSource(apiResponse) { response ->
+                    result.removeSource(apiResponse)
+
+                    handleNetworkCall(response)
+                }
+
+            }
+
+        }
+
+    }
+
+    fun handleNetworkCall(response: GenericApiResponse<ResponseObject>) {
+        when(response) {
+            is ApiSuccessResponse -> {
+                handleApiSuccessResponse(response)
+            }
+            is ApiErrorResponse -> {
+               println("DEBUG: NetworkBoundResource: ${response.errorMessage}")
+                onErrorReturn(response.errorMessage)
+            }
+            is ApiEmptyResponse -> {
+                println("DEBUG: NetworkBoundResource: HTTP 204. Returned Nothing.")
+                onErrorReturn("HTTP 204. Returned Nothing.")
+            }
+        }
+    }
+
+    fun onErrorReturn(message: String){
+        result.value = DataState.error(message)
+    }
+
+    abstract fun handleApiSuccessResponse(response: ApiSuccessResponse<ResponseObject>)
+
+    abstract fun createCall() : LiveData<GenericApiResponse<ResponseObject>>
+
+    fun asLiveData() = result as LiveData<DataState<ViewStateType>>
+}

@@ -11,6 +11,7 @@ import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent
 import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent.*
 import com.codingwithmitch.mviexample.ui.main.state.MainViewState
 import com.codingwithmitch.mviexample.util.AbsentLiveData
+import com.codingwithmitch.mviexample.util.DataState
 
 class MainViewModel : ViewModel() {
 
@@ -25,14 +26,14 @@ class MainViewModel : ViewModel() {
         return _viewState
     }   */
 
-    val dataState : LiveData<MainViewState> = Transformations
+    val dataState : LiveData<DataState<MainViewState>> = Transformations
         .switchMap(_stateEvent) { stateEvent ->  // if change of _stateEvent detected, execute the {}
             stateEvent?.let {
                 handleStateEvent(stateEvent)
             }
         }
 
-    fun handleStateEvent(stateEvent: MainStateEvent) : LiveData<MainViewState> {
+    fun handleStateEvent(stateEvent: MainStateEvent) : LiveData<DataState<MainViewState>> {
         when(stateEvent) {
 
             is GetBlogPostsEvent -> {
@@ -46,7 +47,7 @@ class MainViewModel : ViewModel() {
             }
         }
 
-        return AbsentLiveData.create<MainViewState>()
+        return AbsentLiveData.create()
     }
 
     fun setBlogListData(blogPosts: List<BlogPost>) {

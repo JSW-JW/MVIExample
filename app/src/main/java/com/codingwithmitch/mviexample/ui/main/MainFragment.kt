@@ -43,15 +43,29 @@ class MainFragment : Fragment() {
 
             println("DEBUG: DataState: ${dataState}")
 
-            // The first line of below means "if blogPosts not null, pass it inside of the lambda and make it available."
-            dataState.blogPosts?.let { blogPosts ->
-                // set BlogPosts data
-                viewModel.setBlogListData(blogPosts)
+            // Handle Data<T> (means 'in case of success response and retrieved proper data'.)
+            dataState.data?.let {
+
+                it.blogPosts?.let { blogPosts ->
+                    // set BlogPosts data
+                    viewModel.setBlogListData(blogPosts)
+                }
+
+                it.user?.let { user ->
+                    // set User data
+                    viewModel.setUser(user)
+                }
+
             }
 
-            dataState.user?.let { user ->
-                // set User data
-                viewModel.setUser(user)
+            // Handle error
+            dataState.message?.let {
+
+            }
+
+            // Handle loading
+            dataState.loading.let {
+                
             }
 
         })

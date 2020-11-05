@@ -13,6 +13,6 @@ interface ApiService {
     @GET("placeholder/user/{userId}")
     fun getUser(
         @Path("userId") userId : String
-    ) : User  // need not specify type of Call Object.
+    ) : User
 
 }

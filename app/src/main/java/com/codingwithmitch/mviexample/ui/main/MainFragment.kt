@@ -1,5 +1,6 @@
 package com.codingwithmitch.mviexample.ui.main
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -7,8 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.codingwithmitch.mviexample.R
+import com.codingwithmitch.mviexample.ui.DataStateListener
 import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent
 import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent.*
+import com.codingwithmitch.mviexample.util.DataState
 import java.lang.Exception
 
 class MainFragment : Fragment() {
@@ -16,6 +19,8 @@ class MainFragment : Fragment() {
     private val TAG = "MainFragment"
 
     lateinit var viewModel: MainViewModel
+
+    lateinit var dataStateHandler: DataStateListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -41,7 +46,9 @@ class MainFragment : Fragment() {
 
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
 
+            dataStateHandler.onDataStateChange(dataState)
             println("DEBUG: DataState: ${dataState}")
+
 
             // Handle Data<T> (means 'in case of success response and retrieved proper data'.)
             dataState.data?.let {
@@ -104,6 +111,15 @@ class MainFragment : Fragment() {
 
     private fun triggerGetBlogsEvent() {
         viewModel.setStateEvent(GetBlogPostsEvent())
+    }
+
+    override fun onAttach(context: Context) {  // when fragment is attached, this is invocated with the activity's context.
+        super.onAttach(context)
+        try {
+            dataStateHandler = context as DataStateListener  // this will be passed to catch block if it's not implementing the DataStateListener
+        }catch (e: ClassCastException) {
+            println("$context should implement dataStateListener")
+        }
     }
 
 

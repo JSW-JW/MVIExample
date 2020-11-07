@@ -1,11 +1,9 @@
 package com.codingwithmitch.mviexample.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.Transformations
 import com.codingwithmitch.mviexample.api.MyRetrofitBuilder
 import com.codingwithmitch.mviexample.model.BlogPost
 import com.codingwithmitch.mviexample.model.User
-import com.codingwithmitch.mviexample.repository.NetworkBoundResource
 import com.codingwithmitch.mviexample.ui.main.state.MainViewState
 import com.codingwithmitch.mviexample.util.*
 

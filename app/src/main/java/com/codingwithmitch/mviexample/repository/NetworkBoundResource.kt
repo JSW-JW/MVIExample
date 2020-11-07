@@ -2,8 +2,6 @@ package com.codingwithmitch.mviexample.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import com.codingwithmitch.mviexample.ui.main.state.MainViewState
 import com.codingwithmitch.mviexample.util.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -22,9 +20,11 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType> {
 
     init {
 
+        result.value = DataState.loading(true)
+
         GlobalScope.launch(IO) {
 
-            delay(Constants.TESTTING_NETWORK_DEALY)
+            delay(Constants.TESTING_NETWORK_DEALY)
 
             withContext(Main) {
 
@@ -43,12 +43,12 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType> {
     }
 
     fun handleNetworkCall(response: GenericApiResponse<ResponseObject>) {
-        when(response) {
+        when (response) {
             is ApiSuccessResponse -> {
                 handleApiSuccessResponse(response)
             }
             is ApiErrorResponse -> {
-               println("DEBUG: NetworkBoundResource: ${response.errorMessage}")
+                println("DEBUG: NetworkBoundResource: ${response.errorMessage}")
                 onErrorReturn(response.errorMessage)
             }
             is ApiEmptyResponse -> {
@@ -58,13 +58,13 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType> {
         }
     }
 
-    fun onErrorReturn(message: String){
+    fun onErrorReturn(message: String) {
         result.value = DataState.error(message)
     }
 
     abstract fun handleApiSuccessResponse(response: ApiSuccessResponse<ResponseObject>)
 
-    abstract fun createCall() : LiveData<GenericApiResponse<ResponseObject>>
+    abstract fun createCall(): LiveData<GenericApiResponse<ResponseObject>>
 
     fun asLiveData() = result as LiveData<DataState<ViewStateType>>
 }

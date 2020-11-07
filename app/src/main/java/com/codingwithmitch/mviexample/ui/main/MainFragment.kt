@@ -7,20 +7,31 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.codingwithmitch.mviexample.R
+import com.codingwithmitch.mviexample.model.BlogPost
 import com.codingwithmitch.mviexample.ui.DataStateListener
 import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent
 import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent.*
 import com.codingwithmitch.mviexample.util.DataState
+import com.codingwithmitch.mviexample.util.TopSpacingItemDecoration
+import kotlinx.android.synthetic.main.fragment_main.*
 import java.lang.Exception
 
-class MainFragment : Fragment() {
+class MainFragment : Fragment(), BlogListAdapter.Interaction {
+
+    override fun onItemSelected(position: Int, item: BlogPost) {
+        println("DEBUG: $position")
+        println("DEBUG: $item")
+    }
 
     private val TAG = "MainFragment"
 
     lateinit var viewModel: MainViewModel
 
     lateinit var dataStateHandler: DataStateListener
+
+    lateinit var blogListAdapter: BlogListAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,9 +50,21 @@ class MainFragment : Fragment() {
         } ?: throw Exception("Invalid activity")
 
         subscribeObservers()
+        initRecyclerView()
     }
 
-    fun subscribeObservers(){
+    private fun initRecyclerView() {
+        recycler_view.apply {
+            val topSpacingItemDecoration = TopSpacingItemDecoration(30)
+            addItemDecoration(topSpacingItemDecoration)
+            layoutManager = LinearLayoutManager(activity)
+            blogListAdapter = BlogListAdapter(this@MainFragment)
+            adapter = blogListAdapter // == recycler_view.setAdapter(blogListAdapter)
+        }
+
+    }
+
+    private fun subscribeObservers() {
         viewModel.dataState.removeObservers(viewLifecycleOwner)
 
         viewModel.dataState.observe(viewLifecycleOwner, Observer { dataState ->
@@ -55,7 +78,7 @@ class MainFragment : Fragment() {
 
                 it.getContentIfNotHandled()?.let {
 
-                    it.blogPosts?.let{
+                    it.blogPosts?.let {
                         viewModel.setBlogListData(it)
                     }
 
@@ -82,8 +105,9 @@ class MainFragment : Fragment() {
 
         viewModel.viewState.observe(viewLifecycleOwner, Observer { viewState ->
 
-            viewState.blogPosts?.let {
-                println("DEBUG: Setting blog posts to RecyclerView: ${it}")
+            viewState.blogPosts?.let { list ->
+                println("DEBUG: Setting blog posts to RecyclerView: ${list}")
+                blogListAdapter.submitList(list)
             }
 
             viewState.user?.let {
@@ -99,7 +123,7 @@ class MainFragment : Fragment() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when(item.itemId) {
+        when (item.itemId) {
             R.id.action_get_user -> triggerGetUserEvent()
 
             R.id.action_get_blogs -> triggerGetBlogsEvent()
@@ -118,12 +142,12 @@ class MainFragment : Fragment() {
     override fun onAttach(context: Context) {  // when fragment is attached, this is invocated with the activity's context.
         super.onAttach(context)
         try {
-            dataStateHandler = context as DataStateListener  // this will be passed to catch block if it's not implementing the DataStateListener
-        }catch (e: ClassCastException) {
+            dataStateHandler =
+                context as DataStateListener  // this will be passed to catch block if it's not implementing the DataStateListener
+        } catch (e: ClassCastException) {
             println("$context should implement dataStateListener")
         }
     }
-
 
 
 }

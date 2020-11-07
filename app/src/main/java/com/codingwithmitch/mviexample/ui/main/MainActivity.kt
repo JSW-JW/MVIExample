@@ -40,11 +40,13 @@ class MainActivity : AppCompatActivity(), DataStateListener
         dataState?.let {
 
             // handle loading
-            showProgressBar(it.loading)
+            showProgressBar(dataState.loading)
 
             // handle message
-            it.message?.let { // if the message is not null, showToast
-                showToast(it)
+            dataState.message?.let { event ->
+                event.getContentIfNotHandled()?.let { message ->
+                    showToast(message)
+                }
             }
         }
     }

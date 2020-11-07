@@ -53,14 +53,16 @@ class MainFragment : Fragment() {
             // Handle Data<T> (means 'in case of success response and retrieved proper data'.)
             dataState.data?.let {
 
-                it.blogPosts?.let { blogPosts ->
-                    // set BlogPosts data
-                    viewModel.setBlogListData(blogPosts)
-                }
+                it.getContentIfNotHandled()?.let {
 
-                it.user?.let { user ->
-                    // set User data
-                    viewModel.setUser(user)
+                    it.blogPosts?.let{
+                        viewModel.setBlogListData(it)
+                    }
+
+                    it.user?.let {
+                        viewModel.setUser(it)
+                    }
+
                 }
 
             }

@@ -15,3 +15,5 @@
     This is because we use wrapper class for the dataState. We can deal with various situation and give better user experience using that kind of wrapper class.
     
     DataState class has 3 cases : DataState.data(success case), DataState.loading, DataState.error
+    
+* In this app, if rotate the screen the dataState is observed again, and showing the toast message again. Why 'LiveData' in this case not immune to configuration change?

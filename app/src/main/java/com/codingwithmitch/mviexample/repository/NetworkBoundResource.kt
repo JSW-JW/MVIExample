@@ -30,7 +30,7 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType> {
 
                 val apiResponse = createCall()
 
-                result.addSource(apiResponse) { response ->
+                result.addSource(apiResponse) { response ->  // In kotlin, we can use lambda expression like this.
                     result.removeSource(apiResponse)
 
                     handleNetworkCall(response)

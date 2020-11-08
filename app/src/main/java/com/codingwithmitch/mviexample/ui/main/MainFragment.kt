@@ -8,8 +8,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.bumptech.glide.Glide
 import com.codingwithmitch.mviexample.R
 import com.codingwithmitch.mviexample.model.BlogPost
+import com.codingwithmitch.mviexample.model.User
 import com.codingwithmitch.mviexample.ui.DataStateListener
 import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent
 import com.codingwithmitch.mviexample.ui.main.state.MainStateEvent.*
@@ -90,16 +92,6 @@ class MainFragment : Fragment(), BlogListAdapter.Interaction {
 
             }
 
-            // Handle error
-            dataState.message?.let {
-
-            }
-
-            // Handle loading
-            dataState.loading.let {
-
-            }
-
         })
         viewModel.viewState.removeObservers(viewLifecycleOwner)
 
@@ -110,11 +102,24 @@ class MainFragment : Fragment(), BlogListAdapter.Interaction {
                 blogListAdapter.submitList(list)
             }
 
-            viewState.user?.let {
-                println("DEBUG: Setting user data: ${it}")
+            viewState.user?.let { user ->
+                println("DEBUG: Setting user data: ${user}")
+                setUserProperties(user)
+
             }
         })
 
+    }
+
+    private fun setUserProperties(user: User) {
+        activity?.let { context ->
+            Glide.with(context)
+                .load(user.image)
+                .into(image)
+
+            email.text = user.email
+            username.text = user.username
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -145,7 +150,7 @@ class MainFragment : Fragment(), BlogListAdapter.Interaction {
             dataStateHandler =
                 context as DataStateListener  // this will be passed to catch block if it's not implementing the DataStateListener
         } catch (e: ClassCastException) {
-            println("$context should implement dataStateListener")
+            println("$context should implement dataStateListener")  // MainActivity should implement dataStateListener
         }
     }
 

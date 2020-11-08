@@ -9,7 +9,7 @@ import com.codingwithmitch.mviexample.util.*
 
 object Repository {
 
-    fun getBlogPosts() : LiveData<DataState<MainViewState>>{
+    fun getBlogPosts() : LiveData<DataState<MainViewState>> {
         return object: NetworkBoundResource<List<BlogPost>, MainViewState>() {
             override fun handleApiSuccessResponse(response: ApiSuccessResponse<List<BlogPost>>) {
                 result.value = DataState.data(
@@ -25,7 +25,7 @@ object Repository {
         }.asLiveData()
     }
 
-    fun getUser(userId : String) : LiveData<DataState<MainViewState>>{
+    fun getUser(userId : String) : LiveData<DataState<MainViewState>> {
         return object: NetworkBoundResource<User, MainViewState>() {
             override fun handleApiSuccessResponse(response: ApiSuccessResponse<User>) {
                 result.value = DataState.data(

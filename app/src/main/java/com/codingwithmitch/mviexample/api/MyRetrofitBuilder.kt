@@ -8,7 +8,7 @@ object MyRetrofitBuilder {
 
     const val BASE_URL: String = "https://open-api.xyz/"
 
-    val retrofitBuilder: Retrofit.Builder by lazy {
+    private val retrofitBuilder: Retrofit.Builder by lazy {
         Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addCallAdapterFactory(LiveDataCallAdapterFactory())
@@ -16,7 +16,7 @@ object MyRetrofitBuilder {
     }
 
 
-    val apiService: ApiService by lazy{
+    val apiService: ApiService by lazy {
         retrofitBuilder
             .build()
             .create(ApiService::class.java)

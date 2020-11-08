@@ -7,7 +7,7 @@ data class DataState<T>(
 ) {
     companion object {
         fun <T> error(message: String) : DataState<T> {
-            return DataState<T>(
+            return DataState(
                 message = Event(message), loading = false, data = null
             )
         }
